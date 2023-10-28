@@ -16,6 +16,7 @@ import { SignupValidation } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
 import { useUserContext } from "@/context/authContext";
 import { Loader } from "lucide-react";
+import { createUserAccount } from "@/lib/appwrite/api";
 
 const SignUpForm = () => {
   const { toast } = useToast();
@@ -31,6 +32,16 @@ const SignUpForm = () => {
       password: "",
     },
   });
+
+  async function onSubmit(values: z.infer<typeof SignupValidation>) {
+    const newUser = await createUserAccount(values);
+    if (!newUser) {
+      return toast({
+        title: "Sign up failed, please try again",
+      });
+    }
+  }
+
   const handleSignup = async () => {};
   return (
     <Form {...form}>
