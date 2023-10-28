@@ -14,11 +14,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupValidation } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
+import { useUserContext } from "@/context/authContext";
+import { Loader } from "lucide-react";
 
 const SignUpForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+  // const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
 
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
@@ -34,14 +36,12 @@ const SignUpForm = () => {
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
         <img src="/assets/images/logo.svg" alt="logo" />
-
         <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">
           Create a new account
         </h2>
         <p className="text-light-3 small-medium md:base-regular mt-2">
-          To use snapgram, Please enter your details
+          To use picVibe, Please enter your details
         </p>
-
         <form
           onSubmit={form.handleSubmit(handleSignup)}
           className="flex flex-col gap-5 w-full mt-4"
@@ -102,7 +102,7 @@ const SignUpForm = () => {
             )}
           />
 
-          <Button type="submit" className="shad-button_primary">
+          {/* <Button type="submit" className="shad-button_primary">
             {isCreatingAccount || isSigningInUser || isUserLoading ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
@@ -110,7 +110,7 @@ const SignUpForm = () => {
             ) : (
               "Sign Up"
             )}
-          </Button>
+          </Button> */}
 
           <p className="text-small-regular text-light-2 text-center mt-2">
             Already have an account?

@@ -41,7 +41,7 @@ export default {
         '465': '465px',
       },
       fontFamily: {
-        inter: ['Inter', 'sans-serif'],
+        urbanist: ['Urbanist', 'sans-serif'],
 
       },
       keyframes: {
