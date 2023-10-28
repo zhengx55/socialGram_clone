@@ -12,10 +12,8 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-const signUpSchema = z.object({
-  username: z.string().min(2).max(50),
-});
+import { SignupValidation } from "@/lib/validation";
+import { useToast } from "@/components/ui/use-toast";
 
 const SignUpForm = () => {
   const { toast } = useToast();
