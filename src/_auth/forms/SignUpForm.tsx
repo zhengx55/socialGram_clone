@@ -40,7 +40,7 @@ const SignUpForm = () => {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof SignupValidation>) {
+  const handleSignup = async (values: z.infer<typeof SignupValidation>) => {
     const newUser = await createUserAccount(values);
     if (!newUser) {
       return toast({
@@ -54,9 +54,14 @@ const SignUpForm = () => {
     if (!session) {
       return toast({ title: "Sign in failed, please try again" });
     }
-  }
-
-  const handleSignup = async () => {};
+    const isLoggedIn = await checkAuthUser();
+    if (isLoggedIn) {
+      form.reset();
+      navigate("/");
+    } else {
+      return toast({ title: "Sign up failed, please try again" });
+    }
+  };
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
@@ -130,7 +135,7 @@ const SignUpForm = () => {
           <Button type="submit" className="shad-button_primary">
             {isCreatingUser || isSigningIn || isUserLoading ? (
               <div className="flex-center gap-2">
-                <Loader2 className="animate-spin" /> Loading...
+                <Loader2 size={24} className="animate-spin" /> Loading...
               </div>
             ) : (
               "Sign Up"
