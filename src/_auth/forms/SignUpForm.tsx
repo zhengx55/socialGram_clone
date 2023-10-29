@@ -15,14 +15,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupValidation } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
 import { useUserContext } from "@/context/authContext";
-import { Loader } from "lucide-react";
-import { createUserAccount } from "@/lib/appwrite/api";
+import { Loader2 } from "lucide-react";
+import {
+  useCreateUserAccount,
+  useSignInAccount,
+} from "@/lib/query/queriesAndMutations";
 
 const SignUpForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  // const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+  const { mutateAsync: createUserAccount, isLoading: isCreatingUser } =
+    useCreateUserAccount();
 
+  const { mutateAsync: signInAccount, isLoading: isSigningIn } =
+    useSignInAccount();
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
     defaultValues: {
@@ -39,6 +46,13 @@ const SignUpForm = () => {
       return toast({
         title: "Sign up failed, please try again",
       });
+    }
+    const session = await signInAccount({
+      email: values.email,
+      password: values.password,
+    });
+    if (!session) {
+      return toast({ title: "Sign in failed, please try again" });
     }
   }
 
@@ -113,15 +127,15 @@ const SignUpForm = () => {
             )}
           />
 
-          {/* <Button type="submit" className="shad-button_primary">
-            {isCreatingAccount || isSigningInUser || isUserLoading ? (
+          <Button type="submit" className="shad-button_primary">
+            {isCreatingUser || isSigningIn || isUserLoading ? (
               <div className="flex-center gap-2">
-                <Loader /> Loading...
+                <Loader2 className="animate-spin" /> Loading...
               </div>
             ) : (
               "Sign Up"
             )}
-          </Button> */}
+          </Button>
 
           <p className="text-small-regular text-light-2 text-center mt-2">
             Already have an account?
