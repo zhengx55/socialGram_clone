@@ -44,6 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       const currentAccount = await getCurrentUser();
+      console.log("🚀 ~ file: authContext.tsx:47 ~ checkAuthUser ~ currentAccount:", currentAccount)
       if (currentAccount) {
         setUser({
           id: currentAccount.$id,
@@ -68,6 +69,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const cookieFallback = localStorage.getItem("cookieFallback");
+    // console.log(
+    //   "🚀 ~ file: authContext.tsx:71 ~ useEffect ~ cookieFallback:",
+    //   cookieFallback
+    // );
     if (
       cookieFallback === "[]" ||
       cookieFallback === null ||
@@ -76,8 +81,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       navigate("/sign-in");
     }
 
-    checkAuthUser();
-  }, [navigate]);
+    // checkAuthUser();
+  }, []);
 
   const value = {
     user,
