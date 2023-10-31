@@ -53,7 +53,7 @@ const Home = () => {
 
       <div className="home-creators">
         <h3 className="h3-bold text-light-1">Top Creators</h3>
-        {/* {isUserLoading && !creators ? (
+        {isUserLoading && !creators ? (
           <Loader2 className=" animate-spin" size={24} />
         ) : (
           <ul className="grid 2xl:grid-cols-2 gap-6">
@@ -63,7 +63,7 @@ const Home = () => {
               </li>
             ))}
           </ul>
-        )} */}
+        )}
       </div>
     </div>
   );
