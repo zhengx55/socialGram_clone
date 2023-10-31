@@ -19,7 +19,8 @@ import { PostValidation } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
 import { useUserContext } from "@/context/authContext";
 import FileUploader from "@/components/FileUploader";
-// import { useCreatePost, useUpdatePost } from "@/lib/react-query/queries";
+import { useCreatePost, useUpdatePost } from "@/lib/query/queriesAndMutations";
+import { Loader2 } from "lucide-react";
 
 type PostFormProps = {
   post?: Models.Document;
@@ -41,48 +42,48 @@ const PostForm = ({ post, action }: PostFormProps) => {
   });
 
   // Query
-  //   const { mutateAsync: createPost, isLoading: isLoadingCreate } =
-  //     useCreatePost();
-  //   const { mutateAsync: updatePost, isLoading: isLoadingUpdate } =
-  //     useUpdatePost();
+  const { mutateAsync: createPost, isLoading: isLoadingCreate } =
+    useCreatePost();
+  const { mutateAsync: updatePost, isLoading: isLoadingUpdate } =
+    useUpdatePost();
 
   // Handler
-  //   const handleSubmit = async (value: z.infer<typeof PostValidation>) => {
-  //     // ACTION = UPDATE
-  //     if (post && action === "Update") {
-  //       const updatedPost = await updatePost({
-  //         ...value,
-  //         postId: post.$id,
-  //         imageId: post.imageId,
-  //         imageUrl: post.imageUrl,
-  //       });
+  const handleSubmit = async (value: z.infer<typeof PostValidation>) => {
+    // ACTION = UPDATE
+    if (post && action === "Update") {
+      const updatedPost = await updatePost({
+        ...value,
+        postId: post.$id,
+        imageId: post.imageId,
+        imageUrl: post.imageUrl,
+      });
 
-  //       if (!updatedPost) {
-  //         toast({
-  //           title: `${action} post failed. Please try again.`,
-  //         });
-  //       }
-  //       return navigate(`/posts/${post.$id}`);
-  //     }
+      if (!updatedPost) {
+        toast({
+          title: `${action} post failed. Please try again.`,
+        });
+      }
+      return navigate(`/posts/${post.$id}`);
+    }
 
-  //     // ACTION = CREATE
-  //     const newPost = await createPost({
-  //       ...value,
-  //       userId: user.id,
-  //     });
+    // ACTION = CREATE
+    const newPost = await createPost({
+      ...value,
+      userId: user.id,
+    });
 
-  //     if (!newPost) {
-  //       toast({
-  //         title: `${action} post failed. Please try again.`,
-  //       });
-  //     }
-  //     navigate("/");
-  //   };
+    if (!newPost) {
+      toast({
+        title: `${action} post failed. Please try again.`,
+      });
+    }
+    navigate("/");
+  };
 
   return (
     <Form {...form}>
       <form
-        // onSubmit={form.handleSubmit()}
+        onSubmit={form.handleSubmit(handleSubmit)}
         className="flex flex-col gap-9 w-full  max-w-5xl"
       >
         <FormField
@@ -162,14 +163,16 @@ const PostForm = ({ post, action }: PostFormProps) => {
           >
             Cancel
           </Button>
-          {/* <Button
+          <Button
             type="submit"
             className="shad-button_primary whitespace-nowrap"
             disabled={isLoadingCreate || isLoadingUpdate}
           >
-            {(isLoadingCreate || isLoadingUpdate) && <Loader />}
+            {(isLoadingCreate || isLoadingUpdate) && (
+              <Loader2 className=" animate-spin" size={24} />
+            )}
             {action} Post
-          </Button> */}
+          </Button>
         </div>
       </form>
     </Form>
