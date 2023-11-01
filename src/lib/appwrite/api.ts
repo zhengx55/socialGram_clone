@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 import { ID, Models, Query } from "appwrite";
@@ -86,36 +87,93 @@ export async function getCurrentUser() {
 // =================================================================
 // POSTS
 // =================================================================
-
-export async function createPost(post: INewPost) {
+export async function searchPosts(searchTerm: string) {
   try {
-    const uploadedFile = await uploadFile(post.file[0]);
-    if (!uploadedFile) throw Error;
-    const fileUrl = getFilePreview(uploadedFile.$id);
-    if (!fileUrl) {
-      await deleteFile(uploadedFile.$id);
-      throw Error;
-    }
-
-    const tags = post.tags?.replace(/ /g, "").split(",") || [];
-    const newPost = await databases.createDocument(
+    const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.postCollectionId,
-      ID.unique(),
-      {
-        creator: post.userId,
-        caption: post.caption,
-        imageUrl: fileUrl,
-        imageId: uploadedFile.$id,
-        location: post.location,
-        tags: tags,
-      }
+      [Query.search("caption", searchTerm)]
     );
-    if (!newPost) {
-      await deleteFile(uploadedFile.$id);
-      throw Error;
+
+    if (!posts) throw Error;
+
+    return posts;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
+  const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
+
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam.toString()));
+  }
+
+  try {
+    const posts = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      queries
+    );
+
+    if (!posts) throw Error;
+
+    return posts;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function createPost(post: INewPost) {
+  const tags = post.tags?.replace(/ /g, "").split(",") || [];
+  try {
+    if (post.file.length > 0) {
+      const uploadedFile = await uploadFile(post.file[0]);
+      if (!uploadedFile) throw Error;
+      const fileUrl = getFilePreview(uploadedFile.$id);
+      if (!fileUrl) {
+        await deleteFile(uploadedFile.$id);
+        throw Error;
+      }
+
+      const newPost = await databases.createDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.postCollectionId,
+        ID.unique(),
+        {
+          creator: post.userId,
+          caption: post.caption,
+          imageUrl: fileUrl,
+          imageId: uploadedFile.$id,
+          location: post.location,
+          tags: tags,
+        }
+      );
+      if (!newPost) {
+        await deleteFile(uploadedFile.$id);
+        throw Error;
+      }
+      return newPost;
+    } else {
+      const newPost = await databases.createDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.postCollectionId,
+        ID.unique(),
+        {
+          creator: post.userId,
+          caption: post.caption,
+          imageUrl: "",
+          imageId: "",
+          location: post.location,
+          tags: tags,
+        }
+      );
+      if (!newPost) {
+        throw Error;
+      }
+      return newPost;
     }
-    return newPost;
   } catch (error) {
     console.error(error);
   }
@@ -242,7 +300,7 @@ export async function savePost(userId: string, postId: string) {
       appwriteConfig.savesCollectionId,
       ID.unique(),
       {
-        user: userId,
+        users: userId,
         post: postId,
       }
     );

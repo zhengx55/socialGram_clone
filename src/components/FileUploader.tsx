@@ -4,7 +4,7 @@ import { Button } from "./ui";
 type Props = { fieldChange: (files: File[]) => void; mediaUrl: string };
 
 const FileUploader = ({ fieldChange, mediaUrl }: Props) => {
-  const [fileUrl, setFileUrl] = useState("");
+  const [fileUrl, setFileUrl] = useState(mediaUrl);
   const [file, setFile] = useState<File[]>([]);
 
   const onDrop = useCallback(

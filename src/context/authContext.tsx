@@ -44,10 +44,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       const currentAccount = await getCurrentUser();
-      console.log(
-        "🚀 ~ file: authContext.tsx:47 ~ checkAuthUser ~ currentAccount:",
-        currentAccount
-      );
       if (currentAccount) {
         setUser({
           id: currentAccount.$id,
