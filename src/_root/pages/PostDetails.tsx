@@ -53,11 +53,7 @@ const PostDetails = () => {
         <Loader2 className="animate-spin" size={24} />
       ) : (
         <div className="post_details-card">
-          <img
-            src={post?.imageUrl}
-            alt="image"
-            className="post_details-img"
-          />
+          <img src={post?.imageUrl} alt="image" className="post_details-img" />
 
           <div className="post_details-info">
             <div className="flex-between w-full">

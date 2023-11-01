@@ -84,6 +84,17 @@ export async function getCurrentUser() {
   }
 }
 
+// ============================== SIGN OUT
+export async function signOutAccount() {
+  try {
+    const session = await account.deleteSession("current");
+
+    return session;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // =================================================================
 // POSTS
 // =================================================================
@@ -227,7 +238,7 @@ export async function deleteFile(fileId: string) {
 
 // ============================== DELETE POST
 export async function deletePost(postId?: string, imageId?: string) {
-  if (!postId || !imageId) return;
+  if (!postId) return;
 
   try {
     const statusCode = await databases.deleteDocument(
@@ -238,7 +249,7 @@ export async function deletePost(postId?: string, imageId?: string) {
 
     if (!statusCode) throw Error;
 
-    await deleteFile(imageId);
+    imageId && (await deleteFile(imageId));
 
     return { status: "Ok" };
   } catch (error) {

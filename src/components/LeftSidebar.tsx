@@ -6,23 +6,24 @@ import { Button } from "@/components/ui/button";
 // import { useSignOutAccount } from "@/lib/react-query/queries";
 import { useUserContext, INITIAL_USER } from "@/context/authContext";
 import { Loader2 } from "lucide-react";
+import { useSignOutAccount } from "@/lib/query/queriesAndMutations";
 
 const LeftSidebar = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user, setUser, setIsAuthenticated, isLoading } = useUserContext();
 
-  // const { mutate: signOut } = useSignOutAccount();
+  const { mutate: signOut } = useSignOutAccount();
 
-  // const handleSignOut = async (
-  //   e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  // ) => {
-  //   e.preventDefault();
-  //   signOut();
-  //   setIsAuthenticated(false);
-  //   setUser(INITIAL_USER);
-  //   navigate("/sign-in");
-  // };
+  const handleSignOut = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    signOut();
+    setIsAuthenticated(false);
+    setUser(INITIAL_USER);
+    navigate("/sign-in");
+  };
 
   return (
     <nav className="leftsidebar">
@@ -87,7 +88,7 @@ const LeftSidebar = () => {
       <Button
         variant="ghost"
         className="shad-button_ghost"
-        // onClick={(e) => handleSignOut(e)}
+        onClick={(e) => handleSignOut(e)}
       >
         <img src="/assets/icons/logout.svg" alt="logout" />
         <p className="small-medium lg:base-medium">Logout</p>

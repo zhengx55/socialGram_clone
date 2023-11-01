@@ -12,7 +12,6 @@ import Saved from "./_root/pages/Saved";
 import EditPost from "./_root/pages/EditPost";
 import PostDetails from "./_root/pages/PostDetails";
 import UpdateProfile from "./_root/pages/UpdateProfile";
-import Allusers from "./_root/pages/Allusers";
 import CreatePost from "./_root/pages/CreatePost";
 
 const App = () => {
@@ -27,7 +26,7 @@ const App = () => {
           <Route index element={<Home />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/saved" element={<Saved />} />
-          <Route path="/all-users" element={<Allusers />} />
+
           <Route path="/create-post" element={<CreatePost />} />
           <Route path="/update-post/:id" element={<EditPost />} />
           <Route path="/posts/:id" element={<PostDetails />} />

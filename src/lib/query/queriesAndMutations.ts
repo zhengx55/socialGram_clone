@@ -22,6 +22,7 @@ import {
   savePost,
   searchPosts,
   signInAccount,
+  signOutAccount,
   updatePost,
   updateUser,
 } from "../appwrite/api";
@@ -39,6 +40,13 @@ export const useSignInAccount = () => {
       signInAccount(user),
   });
 };
+
+export const useSignOutAccount = () => {
+  return useMutation({
+    mutationFn: signOutAccount,
+  });
+};
+
 // ============================================================
 // POST QUERIES
 // ============================================================
