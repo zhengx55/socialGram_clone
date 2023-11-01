@@ -9,11 +9,14 @@ import {
 import {
   createPost,
   createUserAccount,
+  deletePost,
   deleteSavedPost,
   getCurrentUser,
   getInfinitePosts,
+  getPostById,
   getRecentPosts,
   getUserById,
+  getUserPosts,
   getUsers,
   likePost,
   savePost,
@@ -92,6 +95,35 @@ export const useGetPosts = () => {
       // Use the $id of the last document as the cursor.
       const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
       return lastId;
+    },
+  });
+};
+
+export const useGetPostById = (postId?: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_POST_BY_ID, postId],
+    queryFn: () => getPostById(postId),
+    enabled: !!postId,
+  });
+};
+
+export const useGetUserPosts = (userId?: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USER_POSTS, userId],
+    queryFn: () => getUserPosts(userId),
+    enabled: !!userId,
+  });
+};
+
+export const useDeletePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ postId, imageId }: { postId?: string; imageId: string }) =>
+      deletePost(postId, imageId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+      });
     },
   });
 };
